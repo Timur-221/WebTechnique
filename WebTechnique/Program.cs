@@ -15,7 +15,7 @@ builder.Services.AddDbContext<DataBase>(options =>
         .Build();
 
     string connectionString = configuration.GetConnectionString("DefaultConnection");
-    options.UseSqlite(connectionString);
+    options.UseSqlServer(connectionString);
 });
 
 // Add authentication

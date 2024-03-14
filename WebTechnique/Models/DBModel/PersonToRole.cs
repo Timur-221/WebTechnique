@@ -7,10 +7,11 @@ namespace WebTechnique.Models.DBModel
         [Key]
         public int Id { get; set; }
 
-        public int PersonId { get; set; }
+        // Внешний ключи для связи с таблицами Person и Role
+        public int? PersonId { get; set; } // Разрешаем null для PersonId
         public Person Person { get; set; }
 
-        public int RoleId { get; set; }
+        public int? RoleId { get; set; } // Разрешаем null для RoleId
         public Role Role { get; set; }
 
     }

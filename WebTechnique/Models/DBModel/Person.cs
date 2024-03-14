@@ -7,12 +7,12 @@ namespace WebTechnique.Models.DBModel
     {
         [Key]
         public int Id { get; set; }
-        public string Surname { get; set; } //Фамилия
-        public string Name { get; set; }//Имя
-        public string Patronymic { get; set; }//Отчесвто
-        public int Age { get; set; }//Возраст
-        public DateTime DateOfBirth { get; set; } //Дата рождения
+        public string Surname { get; set; }
+        public string Name { get; set; }
+        public string? Patronymic { get; set; }
+        public int Age { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
-        public List<PersonToRole> PersonToRoles { get; set; }
+        public ICollection<PersonToRole> PersonToRoles { get; set; }
     }
 }

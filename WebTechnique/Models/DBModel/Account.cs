@@ -13,7 +13,7 @@ namespace WebTechnique.Models.DBModel
         [Required]
         public string Password { get; set; }
 
-        public int PersonToRoleId { get; set; }
-        public PersonToRole PersonToRole { get; set; }
+        public int? PersonToRoleId { get; set; }
+        public virtual PersonToRole PersonToRole { get; set; }
     }
 }

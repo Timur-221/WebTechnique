@@ -1,0 +1,31 @@
+﻿@using System.Globalization
+@using WebTechnique.Models.LessonModel
+@model List<LessonViewModel>
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>День недели</th>
+            <th>Начало урока</th>
+            <th>Конец урока</th>
+            <th>Кабинет</th>
+            <th>Группа</th>
+            <th>Предмет</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var lesson in Model)
+        {
+            <tr class="@(lesson.DayOfWeek == DateTime.Today.DayOfWeek ? "bright-highlight" : "dim-highlight")">
+                <td>@CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(lesson.DayOfWeek)</td>
+                <td>@lesson.StartTime</td>
+                <td>@lesson.EndTime</td>
+                <td>@lesson.Room</td>
+                <td>@lesson.GroupName</td>
+                <td>@lesson.SubjectName</td>
+            </tr>
+        }
+    </tbody>
+</table>

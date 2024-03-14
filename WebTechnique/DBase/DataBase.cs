@@ -6,6 +6,15 @@ namespace WebTechnique.DBase
 {
     public class DataBase : DbContext
     {
+        public DbSet<Person> People { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<PersonToRole> PeopleToRoles { get; set; }
+        public DbSet<Lesson> Lessons { get; set; }
+        public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
+        public DbSet<Group> Groups { get; set; }
+
         public DataBase(DbContextOptions<DataBase> options) : base(options)
         {
         }
@@ -13,43 +22,34 @@ namespace WebTechnique.DBase
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Account>()
-         .HasOne(a => a.PersonToRole) 
-         .WithOne() 
-         .HasForeignKey<Account>(a => a.PersonToRoleId);
+           .HasOne(a => a.PersonToRole)
+           .WithMany()
+           .HasForeignKey(a => a.PersonToRoleId); // Внешний ключ в Account
 
             modelBuilder.Entity<PersonToRole>()
-                .HasKey(pt => pt.Id);
-
-            modelBuilder.Entity<PersonToRole>()
-                .HasOne(pt => pt.Person)
+                .HasOne(ptr => ptr.Person)
                 .WithMany(p => p.PersonToRoles)
-                .HasForeignKey(pt => pt.PersonId);
+                .HasForeignKey(ptr => ptr.PersonId);
 
             modelBuilder.Entity<PersonToRole>()
-                .HasOne(pt => pt.Role)
+                .HasOne(ptr => ptr.Role)
                 .WithMany(r => r.PersonToRoles)
-                .HasForeignKey(pt => pt.RoleId);
+                .HasForeignKey(ptr => ptr.RoleId);
 
-          
+            modelBuilder.Entity<Lesson>()
+            .HasOne(l => l.Teacher)
+            .WithMany(t => t.Lessons)
+            .HasForeignKey(l => l.TeacherId);
+
+            modelBuilder.Entity<Lesson>()
+                .HasOne(l => l.Group)
+                .WithMany(g => g.Lessons)
+                .HasForeignKey(l => l.GroupId);
+
+            modelBuilder.Entity<Lesson>()
+                .HasOne(l => l.Subject)
+                .WithMany(s => s.Lessons)
+                .HasForeignKey(l => l.SubjectId);
         }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                IConfigurationRoot configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json")
-                    .Build();
-
-                string connectionString = configuration.GetConnectionString("DefaultConnection");
-                optionsBuilder.UseSqlite(connectionString);
-            }
-        }
-
-        public DbSet<Person> People { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<PersonToRole> PersonsToRoles { get; set; }
     }
 }
