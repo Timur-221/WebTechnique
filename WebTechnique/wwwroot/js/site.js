@@ -12,3 +12,5 @@ window.addEventListener("load", function () {
         document.getElementById("loading-bar").style.backgroundColor = "transparent";
     }, 500);
 });
+
+

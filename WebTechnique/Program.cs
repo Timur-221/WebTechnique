@@ -18,14 +18,14 @@ builder.Services.AddDbContext<DataBase>(options =>
     options.UseSqlServer(connectionString);
 });
 
-// Add authentication
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.LoginPath = "/Account/Login"; // Указываем маршрут для перенаправления на страницу входа
     });
 
-// Add services to the container.
+// Сервис для страниц
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -43,7 +43,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Add authentication middleware
+// Ауттанификация
 app.UseAuthentication();
 
 app.UseAuthorization();

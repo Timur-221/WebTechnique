@@ -31,19 +31,30 @@ namespace WebTechnique.Controllers
             var hasPassword = new HasPassword();
             hasPassword.PasswordHash = password;
 
-            var account = _dataBase.Accounts
-             .Include(a => a.PersonToRole)
-             .ThenInclude(ptr => ptr.Role)
-             .FirstOrDefault(x => x.Login == username && x.Password == hasPassword.PasswordHash);
+            var account = await _dataBase.Accounts
+            .Include(a => a.PersonToRole)
+            .ThenInclude(ptr => ptr.Role)
+            .FirstOrDefaultAsync(x => x.Login == username && x.Password == hasPassword.PasswordHash);
+
+
 
             if (account != null )
             {
-                var claims = new[]
+                var roles = await _dataBase.PeopleToRoles
+               .Include(ptr => ptr.Role)
+               .Where(x => x.PersonId == account.PersonToRole.PersonId)
+               .ToListAsync();
+
+                var claims = new List<Claim>()
                 {
-                  new Claim(ClaimTypes.Name, account.Login),
-                  new Claim(ClaimTypes.Role, account.PersonToRole.Role.Name),
-                  new Claim(ClaimTypes.Authentication, account.PersonToRole.PersonId.ToString())
+                     new Claim(ClaimTypes.Name, account.Login),
+                     new Claim(ClaimTypes.Authentication, account.PersonToRole.PersonId.ToString())
                 };
+                
+                foreach (var role in roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role.Role.Name));
+                }
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);

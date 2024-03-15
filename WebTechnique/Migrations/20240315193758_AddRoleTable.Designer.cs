@@ -12,8 +12,8 @@ using WebTechnique.DBase;
 namespace WebTechnique.Migrations
 {
     [DbContext(typeof(DataBase))]
-    [Migration("20240314190904_InitialCreateTwo")]
-    partial class InitialCreateTwo
+    [Migration("20240315193758_AddRoleTable")]
+    partial class AddRoleTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -97,10 +97,6 @@ namespace WebTechnique.Migrations
 
                     b.Property<int>("TeacherId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -192,6 +188,75 @@ namespace WebTechnique.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("WebTechnique.Models.DBModel.Specialty", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Specialties");
+                });
+
+            modelBuilder.Entity("WebTechnique.Models.DBModel.Student", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DatePost")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("PDFDiplom")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("Patronymic")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SpecialtyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("SpecialtyId");
+
+                    b.ToTable("Students");
+                });
+
             modelBuilder.Entity("WebTechnique.Models.DBModel.Subject", b =>
                 {
                     b.Property<int>("Id")
@@ -278,6 +343,25 @@ namespace WebTechnique.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("WebTechnique.Models.DBModel.Student", b =>
+                {
+                    b.HasOne("WebTechnique.Models.DBModel.Group", "Group")
+                        .WithMany("Students")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebTechnique.Models.DBModel.Specialty", "Specialty")
+                        .WithMany("Students")
+                        .HasForeignKey("SpecialtyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Specialty");
+                });
+
             modelBuilder.Entity("WebTechnique.Models.DBModel.Teacher", b =>
                 {
                     b.HasOne("WebTechnique.Models.DBModel.Person", "Person")
@@ -290,6 +374,8 @@ namespace WebTechnique.Migrations
             modelBuilder.Entity("WebTechnique.Models.DBModel.Group", b =>
                 {
                     b.Navigation("Lessons");
+
+                    b.Navigation("Students");
                 });
 
             modelBuilder.Entity("WebTechnique.Models.DBModel.Person", b =>
@@ -300,6 +386,11 @@ namespace WebTechnique.Migrations
             modelBuilder.Entity("WebTechnique.Models.DBModel.Role", b =>
                 {
                     b.Navigation("PersonToRoles");
+                });
+
+            modelBuilder.Entity("WebTechnique.Models.DBModel.Specialty", b =>
+                {
+                    b.Navigation("Students");
                 });
 
             modelBuilder.Entity("WebTechnique.Models.DBModel.Subject", b =>

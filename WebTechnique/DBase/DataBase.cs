@@ -15,6 +15,11 @@ namespace WebTechnique.DBase
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Group> Groups { get; set; }
 
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Specialty> Specialties { get; set; }
+
+
+
         public DataBase(DbContextOptions<DataBase> options) : base(options)
         {
         }
@@ -50,6 +55,17 @@ namespace WebTechnique.DBase
                 .HasOne(l => l.Subject)
                 .WithMany(s => s.Lessons)
                 .HasForeignKey(l => l.SubjectId);
+
+            modelBuilder.Entity<Student>()
+             .HasOne(s => s.Specialty)         // У каждого студента есть одна специальность
+            .WithMany(sp => sp.Students)       // Одна специальность может иметь много студентов
+             .HasForeignKey(s => s.SpecialtyId); // Внешний ключ в таблице студентов
+
+            modelBuilder.Entity<Student>()
+            .HasOne(s => s.Group)        
+            .WithMany(sp => sp.Students)      
+               .HasForeignKey(s => s.GroupId); 
+
         }
     }
 }

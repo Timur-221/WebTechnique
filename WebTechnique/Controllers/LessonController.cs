@@ -38,6 +38,7 @@ namespace WebTechnique.Controllers
            foreach (var lesson in ListLisionData)
            {
                 var tempLesson = new LessonViewModel();
+                lesson.Id  = tempLesson.Id;
                 tempLesson.DayOfWeek = lesson.DayOfWeek;
                 tempLesson.Room = lesson.Room;
                 tempLesson.SubjectName = lesson.Subject.Name;

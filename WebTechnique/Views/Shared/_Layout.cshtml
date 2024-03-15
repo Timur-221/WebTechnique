@@ -1,4 +1,12 @@
 ﻿@using System.Security.Claims
+
+@{
+    var roles = User.Claims
+    .Where(c => c.Type == ClaimTypes.Role)
+    .Select(c => c.Value)
+    .ToList();
+}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,32 +27,42 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                @if (@User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value == "Преподователь")
-                {
-                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-center">
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Lesson" asp-action="LessonPage">Мое расписание</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Оценки</a>
-                            </li>
-                        </ul>
-                    </div>
-                }
-                else
-                {
+
+               
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-center">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
                         </li>
+                        @foreach (var role in roles)
+                        {
+                            switch (role)
+                            {
+                                case "Преподователь":
+
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Lesson" asp-action="LessonPage">Мое расписание</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Оценки</a>
+                                    </li>
+                                    break;
+                                case "Куратор":
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Моя группа</a>
+                                    </li>
+                                    break;
+                                case "Регистратор":
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="RegisterStudent" asp-action="RegisterStudentPage">Зарегестрировать студента</a>
+                                    </li>
+                                    break;
+                                    // Добавьте другие case по мере необходимости
+                            }
+                        }
                     </ul>
                 </div>
-                }
             </div>
         </nav>
     </header>
